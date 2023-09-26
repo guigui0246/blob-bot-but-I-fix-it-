@@ -2,11 +2,9 @@ const { Client } = require('discord.js');
 const client = new Client({ intents: 37377, partials: [1, 3] })
 client.fs = require('fs');
 
-//require('https').get('https://kerfus-bot.0lie.repl.co/keepalive',()=>{})
 require('express')()
   .use(require('cors')({origin:'*'}))
   .get("/",(a,b)=>{
-    require('https').get('https://kerfus-bot.0lie.repl.co/keepalive',()=>{})
     b.send(""+client.fs.readFileSync('index.html'))
   })
   .listen(3000,()=>console.log('host working'))
@@ -66,13 +64,12 @@ client.on('messageCreate', msg => {
   }
   
   msg.author.data = client.funcs.load(msg.author.id);
-  
-  let cmd = msg.content.split(' ')[0].slice(2).toLowerCase();
+  let cmd = msg.content.slice(2).trim().split(/ +/)[0].toLowerCase();
   if(!(cmd in commands)){
     msg.reply('command not found!')
     return;
   }
-  let args = msg.content.split(' ').slice(1);
+  let args = msg.content.slice(2).trim().split(/ +/).slice(1);
   if(command_data[cmd].require_alive){
     let blob = client.funcs.findBlob(plot);
     if(msg.author.data.plot[blob[0]][blob[1]].alive==false){
